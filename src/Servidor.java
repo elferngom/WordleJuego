@@ -14,10 +14,9 @@ public class Servidor {
                     PrintWriter pw=new PrintWriter(new OutputStreamWriter(cliente.getOutputStream()))){
                     boolean jugando=true;
                     while(jugando){ //Puede jugar más de una partida
-                        int numero=random.nextInt(4); //Coge al azar una de las palabras de la lista
+                        int numero=random.nextInt(PALABRAS.length); //Coge al azar una de las palabras de la lista
                         String palabra=PALABRAS[numero];
                         StringBuilder guiones=new StringBuilder();
-                        char[] partesServidor=palabra.toCharArray();
                         for(int i=0;i<palabra.length();i++){
                             guiones.append("_");
                         }
@@ -25,12 +24,11 @@ public class Servidor {
                         int intentos=0; //número de intentos por partida
                         while(intentos<6){
                             String respuesta=br.readLine();
-                            char[] partesCliente=respuesta.toCharArray();
+
 
                             intentos++;
                         }
                     }
-
                 }
             }
         }catch(IOException e){
@@ -38,5 +36,24 @@ public class Servidor {
 
         }
 
+    }
+    public static String verificarIntento(String servidor, String cliente){
+        servidor= servidor.toUpperCase();
+        cliente = cliente.toUpperCase();
+        int[] resultado=new int[servidor.length()];
+        StringBuilder servidorModificable=new StringBuilder(servidor);
+        for (int i = 0; i < servidor.length(); i++) {
+            if (servidor.charAt(i) == cliente.charAt(i)) {
+                resultado[i] = 2; //"Marcamos como verde de momento"
+                servidorModificable.setCharAt(i, '#'); //Para que al volver a pasar no se marquen de amarillo, las quitamos
+            }
+        }
+        for(int i = 0; i < servidor.length(); i++){
+            if(resultado[i]!=2){
+                char letra=cliente.charAt(i);
+                //Falta lógica
+            }
+        }
+        return "";
     }
 }
