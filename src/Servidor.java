@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Servidor {
@@ -23,9 +24,9 @@ public class Servidor {
                         pw.println(guiones); //Envia al cliente el número de letras que tiene la palabra
                         int intentos=0; //número de intentos por partida
                         while(intentos<6){
-                            String respuesta=br.readLine();
-
-
+                            String respuesta=br.readLine(); //Leo y guardo la respuesta del cliente
+                            String respuestaServidor=verificarIntento(palabra,respuesta);
+                            pw.println(respuestaServidor);
                             intentos++;
                         }
                     }
@@ -51,9 +52,15 @@ public class Servidor {
         for(int i = 0; i < servidor.length(); i++){
             if(resultado[i]!=2){
                 char letra=cliente.charAt(i);
-                //Falta lógica
+                int indiceSecreta=servidorModificable.indexOf(String.valueOf(letra));
+                if(resultado[indiceSecreta]!=-1){
+                    resultado[i]=1;
+                    servidorModificable.setCharAt(i, '#');
+                } else{
+                    resultado[i]=0;
+                }
             }
         }
-        return "";
+        return Arrays.toString(resultado);
     }
 }
