@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Servidor {
-    private static String[] PALABRAS= {"PERLA", "RIFLE", "SOLER", "MOLER", "FONTANERO"};
+    private static String[] PALABRAS= {"PERLA", "RIFLE", "SOLER", "MOLER", "FONTANERO","ESCAÑO"};
     private static Random random=new Random();
     public static void main(String[] args){
         try(ServerSocket server=new ServerSocket(5000);){
@@ -26,7 +26,7 @@ public class Servidor {
                         while(intentos<6){
                             String respuesta=br.readLine(); //Leo y guardo la respuesta del cliente
                             String respuestaServidor=verificarIntento(palabra,respuesta);
-                            pw.println(respuestaServidor);
+                            pw.println(respuestaServidor); //ej: 01201
                             intentos++;
                         }
                     }
