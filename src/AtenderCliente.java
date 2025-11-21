@@ -11,6 +11,7 @@ public class AtenderCliente implements Runnable {
     public AtenderCliente(Socket socket) {
         this.socket = socket;
     }
+    public boolean win = false;
     @Override
     public void run() {
         String respuestaServidor = null;
@@ -34,15 +35,19 @@ public class AtenderCliente implements Runnable {
                     pw.println(respuestaServidor); //ej: 01201
                     intentos++;
                     if(respuestaServidor.equals("2".repeat(palabra.length()))){
-                        pw.println("¡Has acertado la palabra!");
+                        win = true;
                         break;
                     }
                 }
-                long fin=System.currentTimeMillis();
-                long tiempo=fin-inicio;
-                pw.println("Has tardado "+tiempo+ " ms");
-                TablaRecords.agregarEntrada(palabra,jugador, tiempo);
-
+                pw.println(win);
+                if (win) {
+                    long fin=System.currentTimeMillis();
+                    long tiempo=fin-inicio;
+                    pw.println(tiempo);
+                    TablaRecords.agregarEntrada(palabra,jugador, tiempo);
+                } else {
+                    pw.println(palabra);
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
