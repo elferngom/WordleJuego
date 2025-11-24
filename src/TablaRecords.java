@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.*;
 
-public class TablaRecords {
+public class TablaRecords implements Serializable {
     private static final Map<String, List<EntradaRecord>> tablas = new HashMap<>();
     private static final int ENTRADAS = 3;
     public static synchronized void agregarEntrada(String palabra, String jugador, long tiempo) {

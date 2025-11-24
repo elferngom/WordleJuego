@@ -18,8 +18,19 @@ public class Cliente {
 
             boolean win = false;
             while (!win) {
-                System.out.println("Introduce tu intento: ");
-                String intento = sc.nextLine().toUpperCase();
+                boolean entradaValida = false;
+                String intento = "";
+                while (!entradaValida) {
+                    System.out.println("Introduce tu intento: ");
+                    intento = sc.nextLine().toUpperCase();
+                    if(intento.length()!=guiones.length()){
+                        System.out.println("La palabra tiene " + guiones.length() + " letras");
+                    } else if(!intento.matches("[A-Z]+")){
+                        System.out.println("La palabra solo contiene letras");
+                    } else{
+                        entradaValida = true;
+                    }
+                }
                 pw.println(intento);
                 String cod =  br.readLine();
                 System.out.println("Resultado: " + cod);

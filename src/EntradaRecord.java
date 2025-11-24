@@ -1,4 +1,6 @@
-public class EntradaRecord {
+import java.io.Serializable;
+
+public class EntradaRecord implements Serializable {
     public final String jugador;
     public final long tiempo;
 

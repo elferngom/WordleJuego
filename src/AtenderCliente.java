@@ -78,4 +78,13 @@ public class AtenderCliente implements Runnable {
         }
         return Arrays.toString(resultado);
     }
+    public static void guardar(TablaRecords tabla) {
+        synchronized (tabla) {
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("records.ser"))) {
+                oos.writeObject(tabla);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

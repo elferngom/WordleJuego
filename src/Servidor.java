@@ -7,8 +7,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Servidor {
-
+    public static TablaRecords records;
     public static void main(String[] args){
+        records = cargar();
         ExecutorService pool=Executors.newCachedThreadPool();
         try(ServerSocket server=new ServerSocket(5000);){
             while(true){
@@ -21,6 +22,19 @@ public class Servidor {
 
         }finally {
             pool.shutdown();
+        }
+    }
+    public static TablaRecords cargar(){
+        File f=new File("records.ser");
+        if (!f.exists() || f.length() == 0) {
+            return new TablaRecords();
+        }
+        try(ObjectInputStream ois=new ObjectInputStream(new FileInputStream(f))){
+            return (TablaRecords) ois.readObject();
+        }
+        catch(IOException |ClassNotFoundException e) {
+            e.printStackTrace();
+            return new TablaRecords();
         }
     }
 }
