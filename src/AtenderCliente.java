@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 
 public class AtenderCliente implements Runnable {
     private Socket socket;
-    private static String[] PALABRAS= {"PERLA", "RIFLE", "SOLER", "MOLER", "FONTANERO","ESCAÑO"};
+    private static String[] PALABRAS= {"PERLA", "RIFLE", "SOLER", "MOLER", "FONTANERO"};
     private static Random random=new Random();
     public AtenderCliente(Socket socket) {
         this.socket = socket;
@@ -19,7 +19,8 @@ public class AtenderCliente implements Runnable {
              PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);) {
             boolean jugando = true;
             String jugador = br.readLine();
-            while (jugando) { //Puede jugar más de una partida
+            while (jugando) {//Puede jugar más de una partida
+                win = false;
                 int numero = random.nextInt(PALABRAS.length); //Coge al azar una de las palabras de la lista
                 String palabra = PALABRAS[numero];
                 StringBuilder guiones = new StringBuilder();
@@ -39,14 +40,21 @@ public class AtenderCliente implements Runnable {
                         break;
                     }
                 }
+
                 pw.println(win);
                 if (win) {
                     long fin=System.currentTimeMillis();
                     long tiempo=fin-inicio;
                     pw.println(tiempo);
                     TablaRecords.agregarEntrada(palabra,jugador, tiempo);
+                    guardar(Servidor.records);
                 } else {
                     pw.println(palabra);
+                }
+
+                String seguir = br.readLine();
+                if (seguir.equals("N")) {
+                    jugando = false;
                 }
             }
         } catch (IOException e) {
