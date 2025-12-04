@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 public class Servidor {
     public static TablaRecords records;
     public static List<String> diccionario=new ArrayList<>();
+    public static AtenderCliente jugadorEnEspera=null;
     public static void main(String[] args) {
         records = cargar();
         cargarPalabras();

@@ -12,8 +12,6 @@ public class Cliente {
             String nombre = sc.nextLine();
             pw.println(nombre);
 
-
-
             boolean jugando = true;
             boolean partida = true;
             boolean win = false;
