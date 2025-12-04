@@ -1,15 +1,17 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
 public class AtenderCliente implements Runnable {
     private Socket socket;
-    private static String[] PALABRAS= {"PERLA", "RIFLE", "SOLER", "MOLER", "FONTANERO"};
+    private static List<String> PALABRAS;
     private static Random random=new Random();
-    public AtenderCliente(Socket socket) {
+    public AtenderCliente(Socket socket, List<String> PALABRAS) {
         this.socket = socket;
+        this.PALABRAS = PALABRAS;
     }
     public boolean win = false;
     @Override
@@ -21,8 +23,8 @@ public class AtenderCliente implements Runnable {
             String jugador = br.readLine();
             while (jugando) {//Puede jugar más de una partida
                 win = false;
-                int numero = random.nextInt(PALABRAS.length); //Coge al azar una de las palabras de la lista
-                String palabra = PALABRAS[numero];
+                int numero = random.nextInt(PALABRAS.size()); //Coge al azar una de las palabras de la lista
+                String palabra = PALABRAS.get(numero);
                 StringBuilder guiones = new StringBuilder();
                 for (int i = 0; i < palabra.length(); i++) {
                     guiones.append("_");
