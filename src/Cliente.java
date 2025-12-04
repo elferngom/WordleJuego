@@ -12,59 +12,62 @@ public class Cliente {
             String nombre = sc.nextLine();
             pw.println(nombre);
 
-            String guiones = br.readLine();
-            System.out.println("La palabra tiene " + guiones.length() + " letras");
-            System.out.println(guiones);
+
 
             boolean jugando = true;
+            boolean partida = true;
             boolean win = false;
             while (jugando) {
-                boolean entradaValida = false;
-                String intento = "";
-                while (!entradaValida) {
-                    System.out.println("Introduce tu intento: ");
-                    intento = sc.nextLine().toUpperCase();
-                    if (intento.length() != guiones.length()) {
-                        System.out.println("La palabra tiene " + guiones.length() + " letras");
-                    } else if (!intento.matches("[A-Z]+")) {
-                        System.out.println("La palabra solo contiene letras");
+                String guiones = br.readLine();
+                while (partida) {
+                    System.out.println("La palabra tiene " + guiones.length() + " letras");
+                    System.out.println(guiones);
+                    boolean entradaValida = false;
+                    String intento = "";
+                    while (!entradaValida) {
+                        System.out.println("Introduce tu intento: ");
+                        intento = sc.nextLine().toUpperCase();
+                        if (intento.length() != guiones.length()) {
+                            System.out.println("La palabra tiene " + guiones.length() + " letras");
+                        } else if (!intento.matches("[A-Z]+")) {
+                            System.out.println("La palabra solo contiene letras");
+                        } else {
+                            entradaValida = true;
+                        }
+                    }
+                    pw.println(intento);
+                    String cod = br.readLine();
+                    System.out.println("Resultado: " + cod);
+                    if (cod.equals("2".repeat(guiones.length()))) break;
+                }
+                String s = br.readLine();
+                if (s != null) {
+                    win = Boolean.parseBoolean(s);
+                    if (win) {
+                        String tiempoServidor = br.readLine();
+                        long tiempo = Long.parseLong(tiempoServidor);
+                        System.out.println("¡Has ganado! Tiempo: " + tiempo);
                     } else {
-                        entradaValida = true;
+                        String palabra = br.readLine();
+                        System.out.println("Has perdido. La palabra era: " + palabra);
                     }
                 }
 
-                pw.println(intento);
-                String cod =  br.readLine();
-                System.out.println("Resultado: " + cod);
-                if (cod.equals("2".repeat(guiones.length()))) break;
-            }
-
-            String s = br.readLine();
-            if (s != null) {
-                win = Boolean.parseBoolean(s);
-                if (win) {
-                    String tiempoServidor = br.readLine();
-                    long tiempo = Long.parseLong(tiempoServidor);
-                    System.out.println("¡Has ganado! Tiempo: " + tiempo);
+                String seguir = "";
+                do {
+                    System.out.print("Quieres jugar otra vez? (S/N): ");
+                    seguir = sc.nextLine().trim().toUpperCase();
+                } while (!seguir.equals("S") && !seguir.equals("N"));
+                if (seguir.equals("S")) {
+                    System.out.println("Iniciando nueva partida...");
                 } else {
-                    String palabra = br.readLine();
-                    System.out.println("Has perdido. La palabra era: " + palabra);
+                    System.out.println("Finalizando partida...");
+                    jugando = false;
                 }
-            }
+                pw.println(seguir);
 
-            String seguir = "";
-            do {
-                System.out.print("Quieres jugar otra vez? (S/N): ");
-                seguir = sc.nextLine().trim().toUpperCase();
-            } while (!seguir.equals("S") &&  !seguir.equals("N"));
-            if  (seguir.equals("S")) {
-                System.out.println("Iniciando nueva partida...");
-            } else {
-                System.out.println("Finalizando partida...");
             }
-            pw.println(seguir);
-
-        } catch (IOException e) {
+        }catch(Exception e){
             e.printStackTrace();
         }
     }
