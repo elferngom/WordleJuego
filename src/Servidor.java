@@ -1,16 +1,13 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Servidor {
     public static TablaRecords records;
-    public static List<String> diccionario=new ArrayList<>();
+    public static Map<Integer,List<String>> diccionario=new HashMap<>();
     public static AtenderCliente jugadorEnEspera=null;
     public static void main(String[] args) {
         records = cargar();
@@ -53,9 +50,11 @@ public class Servidor {
             String linea;
             while ((linea = br.readLine()) != null) {
                 String palabra = linea.trim();
-                if(!palabra.isEmpty()) {
-                    diccionario.add(palabra);
+                int letras = palabra.length();
+                if (!diccionario.containsKey(letras)) {
+                    diccionario.put(letras, new ArrayList<>());
                 }
+                diccionario.get(letras).add(palabra);
             }
         }catch(IOException e){
             e.printStackTrace();
