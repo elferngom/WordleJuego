@@ -86,7 +86,11 @@ public class AtenderCliente implements Runnable {
                 }
             }
         }
-        return Arrays.toString(resultado);
+        StringBuilder sb = new StringBuilder();
+        for (int i : resultado) {
+            sb.append(i);
+        }
+        return sb.toString();
     }
     public static void guardar(TablaRecords tabla) {
         synchronized (tabla) {
