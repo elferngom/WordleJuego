@@ -85,4 +85,7 @@ public class Cliente {
         }
 
     }
+    public static void PartidaMultijugador(){
+        //skjdngodngorde
+    }
 }
