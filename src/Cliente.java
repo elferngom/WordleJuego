@@ -26,17 +26,27 @@ public class Cliente {
                         System.out.print("Introduce la longitud de la palabra: ");
                         int longitud = sc.nextInt();
                         pw.println(longitud);
-                        JugarPartidaSolo(br,pw,sc, jugando);
+                        JugarPartidaSolo(br,pw,sc);
                 }
-
-
+                String seguir = "";
+                do {
+                    System.out.print("Quieres jugar otra vez? (S/N): ");
+                    seguir = sc.nextLine().trim().toUpperCase();
+                } while (!seguir.equals("S") && !seguir.equals("N"));
+                if (seguir.equals("S")) {
+                    System.out.println("Iniciando nueva partida...");
+                } else {
+                    System.out.println("Finalizando partida...");
+                    jugando = false;
+                }
+                pw.println(seguir);
 
             }
         }catch(Exception e){
             e.printStackTrace();
         }
     }
-    public static void JugarPartidaSolo(BufferedReader br, PrintWriter pw, Scanner sc, boolean jugando) throws IOException{
+    public static void JugarPartidaSolo(BufferedReader br, PrintWriter pw, Scanner sc) throws IOException{
         String guiones = br.readLine();
         boolean win = false;
         boolean partida = true;
@@ -74,17 +84,5 @@ public class Cliente {
             }
         }
 
-        String seguir = "";
-        do {
-            System.out.print("Quieres jugar otra vez? (S/N): ");
-            seguir = sc.nextLine().trim().toUpperCase();
-        } while (!seguir.equals("S") && !seguir.equals("N"));
-        if (seguir.equals("S")) {
-            System.out.println("Iniciando nueva partida...");
-        } else {
-            System.out.println("Finalizando partida...");
-            jugando = false;
-        }
-        pw.println(seguir);
     }
 }
