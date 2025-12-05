@@ -17,28 +17,32 @@ public class AtenderCliente implements Runnable {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);) {
             boolean jugando = true;
+            String jugandoStr = "";
             String jugador = br.readLine();
             List<String> palabrasTamanio = new ArrayList<>();
+            String opcionStr = "";
+            String tamanioStr = "";
+            int opcion;
+            int tamanio;
+
             while (jugando) {//Puede jugar más de una partida
-                String opcion = br.readLine();
-                int opcionNum = 0;
-                try {
-                    opcionNum = Integer.parseInt(opcion);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                switch (opcionNum) {
+                opcionStr = br.readLine();
+                opcion = Integer.parseInt(opcionStr);
+
+                switch (opcion) {
                     case 1:
-                        String tamStr = br.readLine();
-                        int tamanio = 0;
-                        try {
-                            tamanio = Integer.parseInt(tamStr);
-                        } catch (NumberFormatException e) {
-                            tamanio = 0;
-                        }
+                        tamanioStr = br.readLine();
+                        tamanio = Integer.parseInt(tamanioStr);
                         jugarPartida(br, pw, jugador, tamanio, palabrasTamanio);
                         break;
+                    case 2:
+                        tamanio = random.nextInt(4,8);
+                        jugarPartida(br, pw, jugador, tamanio, palabrasTamanio);
+                        break;
+                    case 3:
                 }
+                jugandoStr = br.readLine();
+                jugando = Boolean.parseBoolean(jugandoStr);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -50,12 +54,8 @@ public class AtenderCliente implements Runnable {
         String palabra;
         palabrasTamanio = PALABRAS.get(tamanio);
         palabra = palabrasTamanio.get(random.nextInt(palabrasTamanio.size()));
-        StringBuilder guiones = new StringBuilder();
-        for (int i = 0; i < palabra.length(); i++) {
-            guiones.append("_");
-        }
-        pw.println(guiones); //Envia al cliente el número de letras que tiene la palabra
-        int intentos = 0; //número de intentos por partida
+        pw.println(palabra.length());
+        int intentos = 0;
         long inicio=System.currentTimeMillis();
         while (intentos < 6) {
             String respuesta = br.readLine(); //Leo y guardo la respuesta del cliente
