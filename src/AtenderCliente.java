@@ -14,53 +14,69 @@ public class AtenderCliente implements Runnable {
     public boolean win = false;
     @Override
     public void run() {
-        String respuestaServidor = null;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);) {
             boolean jugando = true;
             String jugador = br.readLine();
-            String palabra;
             List<String> palabrasTamanio = new ArrayList<>();
             while (jugando) {//Puede jugar más de una partida
-                win = false;
-                palabrasTamanio = PALABRAS.get(4);
-                palabra = palabrasTamanio.get(random.nextInt(palabrasTamanio.size()));
-                StringBuilder guiones = new StringBuilder();
-                for (int i = 0; i < palabra.length(); i++) {
-                    guiones.append("_");
+                String opcion = br.readLine();
+                int opcionNum = 0;
+                try {
+                    opcionNum = Integer.parseInt(opcion);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                pw.println(guiones); //Envia al cliente el número de letras que tiene la palabra
-                int intentos = 0; //número de intentos por partida
-                long inicio=System.currentTimeMillis();
-                while (intentos < 6) {
-                    String respuesta = br.readLine(); //Leo y guardo la respuesta del cliente
-                    respuestaServidor = verificarIntento(palabra, respuesta);
-                    pw.println(respuestaServidor); //ej: 01201
-                    intentos++;
-                    if(respuestaServidor.equals("2".repeat(palabra.length()))){
-                        win = true;
+                switch (opcionNum) {
+                    case 1:
+                        String tamStr = br.readLine();
+                        int tamanio = 0;
+                        try {
+                            tamanio = Integer.parseInt(tamStr);
+                        } catch (NumberFormatException e) {
+                            tamanio = 0;
+                        }
+                        jugarPartida(br, pw, jugador, tamanio, palabrasTamanio);
                         break;
-                    }
-                }
-
-                pw.println(win);
-                if (win) {
-                    long fin=System.currentTimeMillis();
-                    long tiempo=fin-inicio;
-                    pw.println(tiempo);
-                    TablaRecords.agregarEntrada(palabra,jugador, tiempo);
-                    guardar(Servidor.records);
-                } else {
-                    pw.println(palabra);
-                }
-
-                String seguir = br.readLine();
-                if (seguir.equals("N")) {
-                    jugando = false;
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+    public void jugarPartida(BufferedReader br, PrintWriter pw, String jugador, int tamanio,List<String> palabrasTamanio)throws IOException {
+        win = false;
+        String respuestaServidor = null;
+        String palabra;
+        palabrasTamanio = PALABRAS.get(tamanio);
+        palabra = palabrasTamanio.get(random.nextInt(palabrasTamanio.size()));
+        StringBuilder guiones = new StringBuilder();
+        for (int i = 0; i < palabra.length(); i++) {
+            guiones.append("_");
+        }
+        pw.println(guiones); //Envia al cliente el número de letras que tiene la palabra
+        int intentos = 0; //número de intentos por partida
+        long inicio=System.currentTimeMillis();
+        while (intentos < 6) {
+            String respuesta = br.readLine(); //Leo y guardo la respuesta del cliente
+            respuestaServidor = verificarIntento(palabra, respuesta);
+            pw.println(respuestaServidor); //ej: 01201
+            intentos++;
+            if(respuestaServidor.equals("2".repeat(palabra.length()))){
+                win = true;
+                break;
+            }
+        }
+
+        pw.println(win);
+        if (win) {
+            long fin=System.currentTimeMillis();
+            long tiempo=fin-inicio;
+            pw.println(tiempo);
+            TablaRecords.agregarEntrada(palabra,jugador, tiempo);
+            guardar(Servidor.records);
+        } else {
+            pw.println(palabra);
         }
     }
     public static String verificarIntento(String servidor, String cliente){
