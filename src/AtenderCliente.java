@@ -1,12 +1,12 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
-import java.util.concurrent.Callable;
 
 public class AtenderCliente implements Runnable {
     private Socket socket;
     private static Map<Integer,List<String>> PALABRAS;
     private static Random random=new Random();
+    private static List<String> PALABRASMULTIJUGADOR;
     public AtenderCliente(Socket socket, Map<Integer,List<String>> PALABRAS) {
         this.socket = socket;
         this.PALABRAS = PALABRAS;
@@ -78,6 +78,46 @@ public class AtenderCliente implements Runnable {
         } else {
             pw.println(palabra);
         }
+    }
+
+    public void partidaMultijugador(BufferedReader br, PrintWriter pw, String jugador,Random rd){
+        boolean primero=false;
+        if(Servidor.jugadorEnEspera==null){
+            Servidor.jugadorEnEspera=this;
+            primero=true;
+        } else{
+            AtenderCliente rival=Servidor.jugadorEnEspera;
+            List<String> palabra=new ArrayList<>();
+            palabra.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
+            palabra.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
+            palabra.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
+        }
+
+
+
+    }
+    //Este metodo es booleano para que cuando un cliente acierte la palabra vctorias sume un punto
+    public boolean jugarPartidaCopa(BufferedReader br, PrintWriter pw, String jugador, String palabra)throws IOException {
+        win = false;
+        String respuestaServidor = null;
+        StringBuilder guiones = new StringBuilder();
+        for (int i = 0; i < palabra.length(); i++) {
+            guiones.append("_");
+        }
+        pw.println(guiones); //Envia al cliente el número de letras que tiene la palabra
+        int intentos = 0; //número de intentos por partida
+        long inicio = System.currentTimeMillis();
+        while (intentos < 6) {
+            String respuesta = br.readLine(); //Leo y guardo la respuesta del cliente
+            respuestaServidor = verificarIntento(palabra, respuesta);
+            pw.println(respuestaServidor); //ej: 01201
+            intentos++;
+            if (respuestaServidor.equals("2".repeat(palabra.length()))) {
+                win = true;
+                break;
+            }
+        }
+        return true;
     }
     public static String verificarIntento(String servidor, String cliente){
         servidor= servidor.toUpperCase();
