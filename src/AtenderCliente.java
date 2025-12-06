@@ -99,12 +99,12 @@ public class AtenderCliente implements Runnable {
         int puntosRival;
         boolean primero=false;
         List<String> palabras = new ArrayList<>();
-        palabras.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
-        palabras.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
-        palabras.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
         synchronized(Servidor.class) {
             if (Servidor.partidaMultijugadorEnEspera == null) { //Si no hay partida soy el primero la creo y le paso ya las palabras al azar
                 partidaMultijugador = new PartidaMultijugador(palabras);
+                palabras.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
+                palabras.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
+                palabras.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
                 //Dejo la partida visible y accesible en el servidor para otro jugador
                 Servidor.partidaMultijugadorEnEspera = partidaMultijugador;
                 primero = true;
@@ -164,7 +164,6 @@ public class AtenderCliente implements Runnable {
         }
         pw.println(guiones); //Envia al cliente el número de letras que tiene la palabra
         int intentos = 0; //número de intentos por partida
-        long inicio = System.currentTimeMillis();
         while (!win) {
             String respuesta = br.readLine(); //Leo y guardo la respuesta del cliente
             respuestaServidor = verificarIntento(palabra, respuesta);
