@@ -212,17 +212,17 @@ public class Cliente {
                     }
                     pw.println(intento);
                     String respuestaServidor = br.readLine();
-                    for (int j= 0; j < longitud; j++) {
+                    for (int k= 0; k < longitud; k++) {
                         System.out.print("[");
-                        switch (respuestaServidor.charAt(i)) {
+                        switch (respuestaServidor.charAt(k)) {
                             case '0':
-                                System.out.print(rojo + intento.charAt(i) + reset);
+                                System.out.print(rojo + intento.charAt(k) + reset);
                                 break;
                             case '1':
-                                System.out.print(amarillo + intento.charAt(i) + reset);
+                                System.out.print(amarillo + intento.charAt(k) + reset);
                                 break;
                             case '2':
-                                System.out.print(verde + intento.charAt(i) + reset);
+                                System.out.print(verde + intento.charAt(k) + reset);
                         }
                         System.out.print("]");
                     }

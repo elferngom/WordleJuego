@@ -119,7 +119,7 @@ public class AtenderCliente implements Runnable {
             this.partidaMultijugador.getBarrera().await();
             pw.println("EMPIEZA LA PARTIDA");
             for(int i=0;i<3;i++){
-                pw.println("RONDA "+i+1);
+                pw.println("RONDA "+(i+1));
                 int intentos=jugarPartidaMulti(br,pw,jugador,palabras.get(i));
                 long tiempo=1000;
                 pw.println("Esperando al otro jugador...");
