@@ -1,12 +1,14 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.BrokenBarrierException;
 
 public class AtenderCliente implements Runnable {
     private Socket socket;
     private static Map<Integer,List<String>> PALABRAS;
     private static Random random=new Random();
     private static List<String> PALABRASMULTIJUGADOR;
+    private PartidaMultijugador partidaMultijugador;
     public AtenderCliente(Socket socket, Map<Integer,List<String>> PALABRAS) {
         this.socket = socket;
         this.PALABRAS = PALABRAS;
@@ -40,6 +42,8 @@ public class AtenderCliente implements Runnable {
                         jugarPartida(br, pw, jugador, tamanio, palabrasTamanio, true);
                         break;
                     case 3:
+                        partidaMultijugador(br,pw,jugador,random);
+                        break;
                 }
                 jugandoStr = br.readLine();
                 jugando = Boolean.parseBoolean(jugandoStr);
@@ -91,23 +95,65 @@ public class AtenderCliente implements Runnable {
     }
 
     public void partidaMultijugador(BufferedReader br, PrintWriter pw, String jugador,Random rd){
+        int misPuntos;
+        int puntosRival;
         boolean primero=false;
-        if(Servidor.jugadorEnEspera==null){
-            Servidor.jugadorEnEspera=this;
-            primero=true;
+        List<String> palabras = new ArrayList<>();
+        palabras.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
+        palabras.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
+        palabras.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
+        synchronized(Servidor.class) {
+            if (Servidor.partidaMultijugadorEnEspera == null) { //Si no hay partida soy el primero la creo y le paso ya las palabras al azar
+                partidaMultijugador = new PartidaMultijugador(palabras);
+                //Dejo la partida visible y accesible en el servidor para otro jugador
+                Servidor.partidaMultijugadorEnEspera = partidaMultijugador;
+                primero = true;
+            } else {
+                primero = false;
+                partidaMultijugador = Servidor.partidaMultijugadorEnEspera;
+                //Ya somos dos entonces vacio la partida en espera
+                Servidor.partidaMultijugadorEnEspera = null;
+            }
+        }
+        try{
+            this.partidaMultijugador.getBarrera().await();
+            pw.println("EMPIEZA LA PARTIDA");
+            for(int i=0;i<3;i++){
+                pw.println("RONDA "+i+1);
+                int intentos=jugarPartidaMulti(br,pw,jugador,palabras.get(i));
+                long tiempo=1000;
+                pw.println("Esperando al otro jugador...");
+                this.partidaMultijugador.registrarResultados(intentos, tiempo, primero);
+                this.partidaMultijugador.getBarrera().await();
+                if (primero) {
+                    this.partidaMultijugador.apuntarPuntos();
+                }
+                this.partidaMultijugador.getBarrera().await();
+            }
+        if(primero){
+            misPuntos=this.partidaMultijugador.puntosJ1;
+            puntosRival=this.partidaMultijugador.puntosJ2;
+        }else{
+            misPuntos=this.partidaMultijugador.puntosJ2;
+            puntosRival=this.partidaMultijugador.puntosJ1;
+        }
+        if(misPuntos>puntosRival){
+            pw.println("HAS GANADO CON "+ misPuntos+"!");
         } else{
-            AtenderCliente rival=Servidor.jugadorEnEspera;
-            List<String> palabra=new ArrayList<>();
-            palabra.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
-            palabra.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
-            palabra.add(PALABRAS.get(5).get(rd.nextInt(PALABRAS.get(5).size())));
+            pw.println("HAS PERDIDO CON "+ misPuntos+"!");
         }
 
-
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (BrokenBarrierException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
     //Este metodo es booleano para que cuando un cliente acierte la palabra vctorias sume un punto
-    public boolean jugarPartidaCopa(BufferedReader br, PrintWriter pw, String jugador, String palabra)throws IOException {
+    public int jugarPartidaMulti(BufferedReader br, PrintWriter pw, String jugador, String palabra)throws IOException {
         win = false;
         String respuestaServidor = null;
         StringBuilder guiones = new StringBuilder();
@@ -117,7 +163,7 @@ public class AtenderCliente implements Runnable {
         pw.println(guiones); //Envia al cliente el número de letras que tiene la palabra
         int intentos = 0; //número de intentos por partida
         long inicio = System.currentTimeMillis();
-        while (intentos < 6) {
+        while (!win) {
             String respuesta = br.readLine(); //Leo y guardo la respuesta del cliente
             respuestaServidor = verificarIntento(palabra, respuesta);
             pw.println(respuestaServidor); //ej: 01201
@@ -127,7 +173,7 @@ public class AtenderCliente implements Runnable {
                 break;
             }
         }
-        return true;
+        return intentos;
     }
     public static String verificarIntento(String servidor, String cliente){
         servidor= servidor.toUpperCase();

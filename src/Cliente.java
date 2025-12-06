@@ -72,6 +72,7 @@ public class Cliente {
                         break;
                     case 6:
                         pw.println(3);
+                        JugarPartidaMultijugador(br,pw,sc);
                         break;
                 }
                 String seguir = "";
@@ -172,7 +173,77 @@ public class Cliente {
     }
 
 
-    public static void PartidaMultijugador(){
+    public static void JugarPartidaMultijugador(BufferedReader br, PrintWriter pw, Scanner sc){
+        try {
+            System.out.println("Buscando partida...");
+
+            String mensajeInicio = br.readLine();
+            System.out.println(mensajeInicio);
+            for(int i=0;i<3;i++){
+                String ronda=br.readLine();
+                System.out.println(ronda);
+
+                String guiones=br.readLine();
+                int longitud=guiones.length();
+
+                StringBuilder huecos=new StringBuilder();
+                for(int j=0;j<longitud;j++){
+                    huecos.append("[_]");
+                }
+                System.out.println("Palabra de" + longitud + "guiones");
+
+                int intentos=0;
+                boolean rondaTerminada=false;
+                while(!rondaTerminada){
+                    System.out.println(huecos);
+                    String intento="";
+                    boolean entradaValida = false;
+                    while (!entradaValida) {
+                        intento = sc.nextLine().toUpperCase();
+                        if (intento.length() != longitud) {
+                            System.out.println("La palabra tiene " + longitud + " letras");
+                            System.out.println(huecos);
+                        } else if (!intento.matches("[A-Z]+")) {
+                            System.out.println("La palabra solo contiene letras");
+                            System.out.println(huecos);
+                        } else {
+                            entradaValida = true;
+                        }
+                    }
+                    pw.println(intento);
+                    String respuestaServidor = br.readLine();
+                    for (int j= 0; j < longitud; j++) {
+                        System.out.print("[");
+                        switch (respuestaServidor.charAt(i)) {
+                            case '0':
+                                System.out.print(rojo + intento.charAt(i) + reset);
+                                break;
+                            case '1':
+                                System.out.print(amarillo + intento.charAt(i) + reset);
+                                break;
+                            case '2':
+                                System.out.print(verde + intento.charAt(i) + reset);
+                        }
+                        System.out.print("]");
+                    }
+                    System.out.println();
+                    intentos++;
+                    if(respuestaServidor.equals("2".repeat(longitud))){
+                        System.out.println("PALABRA CORRECTA. HAS GASTADO "+intentos+" intentos");
+                        rondaTerminada=true;
+                    }
+                }
+                String esperaMng=br.readLine();
+                System.out.println(esperaMng);
+            }
+            String resultadoFinal = br.readLine();
+
+            if (resultadoFinal.contains("GANADO")) System.out.println(verde + resultadoFinal + reset);
+            else if (resultadoFinal.contains("PERDIDO")) System.out.println(rojo + resultadoFinal + reset);
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
 
     }
 }

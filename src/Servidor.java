@@ -8,7 +8,8 @@ import java.util.concurrent.Executors;
 public class Servidor {
     public static TablaRecords records;
     public static Map<Integer,List<String>> diccionario=new HashMap<>();
-    public static AtenderCliente jugadorEnEspera=null;
+    public static PartidaMultijugador partidaMultijugadorEnEspera=null;
+
     public static void main(String[] args) {
         records = cargar();
         cargarPalabras();
