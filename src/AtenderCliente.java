@@ -120,8 +120,10 @@ public class AtenderCliente implements Runnable {
             pw.println("EMPIEZA LA PARTIDA");
             for(int i=0;i<3;i++){
                 pw.println("RONDA "+(i+1));
+                long inicio=System.currentTimeMillis();
                 int intentos=jugarPartidaMulti(br,pw,jugador,palabras.get(i));
-                long tiempo=1000;
+                long fin=System.currentTimeMillis();
+                long tiempo=fin-inicio;
                 pw.println("Esperando al otro jugador...");
                 this.partidaMultijugador.registrarResultados(intentos, tiempo, primero);
                 this.partidaMultijugador.getBarrera().await();
@@ -138,9 +140,9 @@ public class AtenderCliente implements Runnable {
             puntosRival=this.partidaMultijugador.puntosJ1;
         }
         if(misPuntos>puntosRival){
-            pw.println("HAS GANADO CON "+ misPuntos+"!");
+            pw.println("HAS GANADO CON "+ misPuntos+" PUNTOS!");
         } else{
-            pw.println("HAS PERDIDO CON "+ misPuntos+"!");
+            pw.println("HAS PERDIDO CON "+ misPuntos+" PUNTOS!");
         }
 
         } catch (InterruptedException e) {
