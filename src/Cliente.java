@@ -190,7 +190,7 @@ public class Cliente {
                 for(int j=0;j<longitud;j++){
                     huecos.append("[_]");
                 }
-                System.out.println("Palabra de" + longitud + "guiones");
+                System.out.println("Palabra de" + longitud + " letras");
 
                 int intentos=0;
                 boolean rondaTerminada=false;
