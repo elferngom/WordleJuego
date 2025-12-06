@@ -49,26 +49,26 @@ public class Cliente {
                     case 1:
                         pw.println(1);
                         pw.println(4);
-                        JugarPartidaSolo(br,pw,sc);
+                        JugarPartidaSolo(br,pw,sc,false);
                         break;
                     case 2:
                         pw.println(1);
                         pw.println(5);
-                        JugarPartidaSolo(br,pw,sc);
+                        JugarPartidaSolo(br,pw,sc,false);
                         break;
                     case 3:
                         pw.println(1);
                         pw.println(6);
-                        JugarPartidaSolo(br,pw,sc);
+                        JugarPartidaSolo(br,pw,sc,false);
                         break;
                     case 4:
                         pw.println(1);
                         pw.println(7);
-                        JugarPartidaSolo(br,pw,sc);
+                        JugarPartidaSolo(br,pw,sc,false);
                         break;
                     case 5:
                         pw.println(2);
-                        JugarPartidaSolo(br,pw,sc);
+                        JugarPartidaSolo(br,pw,sc,true);
                         break;
                     case 6:
                         pw.println(3);
@@ -91,15 +91,15 @@ public class Cliente {
             e.printStackTrace();
         }
     }
-    public static void JugarPartidaSolo(BufferedReader br, PrintWriter pw, Scanner sc) throws IOException{
+    public static void JugarPartidaSolo(BufferedReader br, PrintWriter pw, Scanner sc, boolean contrarreloj) throws IOException{
         String tamanioStr = br.readLine();
         int tamanio = Integer.parseInt(tamanioStr);
-        StringBuilder huecos = new StringBuilder("[][][][]");
+        StringBuilder huecos = new StringBuilder();
         String intento = "";
         boolean win = false;
         System.out.println("La palabra tiene " + tamanio + " letras");
-        for (int i = 4; i < tamanio; i++) {
-            huecos.append("[]");
+        for (int i = 0; i < tamanio; i++) {
+            huecos.append("[_]");
         }
         while (true) {
             System.out.println(huecos);
@@ -139,9 +139,13 @@ public class Cliente {
         if (s != null) {
             win = Boolean.parseBoolean(s);
             if (win) {
-                String tiempoServidor = br.readLine();
-                long tiempo = Long.parseLong(tiempoServidor);
-                System.out.println("¡Has ganado! Tiempo: " + tiempo * 0.001 + " segundos.");
+                if (contrarreloj) {
+                    String tiempoServidor = br.readLine();
+                    long tiempo = Long.parseLong(tiempoServidor);
+                    System.out.println(cursiva + "\n¡TU TIEMPO HA SIDO: " + tiempo * 0.001 + " SEGUNDOS!\n" + reset);
+                } else {
+                    System.out.println(cursiva + "\n¡HAS ACERTADO!\n" +  reset);
+                }
             } else {
                 String palabra = br.readLine();
                 System.out.println("Has perdido. La palabra era: " + palabra);

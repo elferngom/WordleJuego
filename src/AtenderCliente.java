@@ -33,11 +33,11 @@ public class AtenderCliente implements Runnable {
                     case 1:
                         tamanioStr = br.readLine();
                         tamanio = Integer.parseInt(tamanioStr);
-                        jugarPartida(br, pw, jugador, tamanio, palabrasTamanio);
+                        jugarPartida(br, pw, jugador, tamanio, palabrasTamanio, false);
                         break;
                     case 2:
                         tamanio = random.nextInt(4,8);
-                        jugarPartida(br, pw, jugador, tamanio, palabrasTamanio);
+                        jugarPartida(br, pw, jugador, tamanio, palabrasTamanio, true);
                         break;
                     case 3:
                 }
@@ -48,7 +48,7 @@ public class AtenderCliente implements Runnable {
             throw new RuntimeException(e);
         }
     }
-    public void jugarPartida(BufferedReader br, PrintWriter pw, String jugador, int tamanio,List<String> palabrasTamanio)throws IOException {
+    public void jugarPartida(BufferedReader br, PrintWriter pw, String jugador, int tamanio,List<String> palabrasTamanio, boolean contrarreloj)throws IOException {
         win = false;
         String respuestaServidor = null;
         String palabra;
@@ -70,11 +70,13 @@ public class AtenderCliente implements Runnable {
 
         pw.println(win);
         if (win) {
-            long fin=System.currentTimeMillis();
-            long tiempo=fin-inicio;
-            pw.println(tiempo);
-            TablaRecords.agregarEntrada(palabra,jugador, tiempo);
-            guardar(Servidor.records);
+            if(contrarreloj){
+                long fin=System.currentTimeMillis();
+                long tiempo=fin-inicio;
+                pw.println(tiempo);
+                TablaRecords.agregarEntrada(palabra,jugador, tiempo);
+                guardar(Servidor.records);
+            }
         } else {
             pw.println(palabra);
         }
