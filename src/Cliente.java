@@ -76,7 +76,7 @@ public class Cliente {
                 }
                 String seguir = "";
                 do {
-                    System.out.print("Quieres jugar otra vez? (S/N): ");
+                    System.out.print("\nQuieres jugar otra vez? (S/N): ");
                     seguir = sc.nextLine().trim().toUpperCase();
                 } while (!seguir.equals("S") && !seguir.equals("N"));
                 if (seguir.equals("S")) {
@@ -97,12 +97,23 @@ public class Cliente {
         StringBuilder huecos = new StringBuilder();
         String intento = "";
         boolean win = false;
-        System.out.println("La palabra tiene " + tamanio + " letras");
+        int intentos = 1;
+        if (!contrarreloj) {
+            String intentosStr = br.readLine();
+            intentos = Integer.parseInt(intentosStr);
+        }
+
+        if (!contrarreloj) {
+            System.out.println(cursiva + "\nTienes " + intentos + " intentos\n" + reset);
+        } else {
+            System.out.println(cursiva + "\nEl tiempo está corriendo...\n" + reset);
+        }
         for (int i = 0; i < tamanio; i++) {
             huecos.append("[_]");
         }
         while (true) {
-            System.out.println(huecos);
+            System.out.println(huecos + cursiva + " " + intentos + reset);
+
             boolean entradaValida = false;
             while (!entradaValida) {
                 intento = sc.nextLine().toUpperCase();
@@ -117,6 +128,11 @@ public class Cliente {
                 }
             }
             pw.println(intento);
+            if (!contrarreloj) {
+                intentos--;
+            } else {
+                intentos++;
+            }
             String cod = br.readLine();
             for (int i = 0; i < tamanio; i++) {
                 System.out.print("[");
@@ -134,6 +150,7 @@ public class Cliente {
             }
             System.out.println();
             if (cod.equals("2".repeat(tamanio))) break;
+            if (!contrarreloj && intentos < 1) break;
         }
         String s = br.readLine();
         if (s != null) {
@@ -148,7 +165,7 @@ public class Cliente {
                 }
             } else {
                 String palabra = br.readLine();
-                System.out.println("Has perdido. La palabra era: " + palabra);
+                System.out.println("\nHas perdido. La palabra era: \n" + verde + palabra + reset);
             }
         }
 

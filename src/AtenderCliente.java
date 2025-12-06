@@ -55,14 +55,22 @@ public class AtenderCliente implements Runnable {
         palabrasTamanio = PALABRAS.get(tamanio);
         palabra = palabrasTamanio.get(random.nextInt(palabrasTamanio.size()));
         pw.println(palabra.length());
-        int intentos = 0;
-        long inicio=System.currentTimeMillis();
-        while (intentos < 6) {
+        int intentos = 1;
+        long inicio = 0;
+        if (!contrarreloj) {
+            intentos = 6;
+            pw.println(intentos);
+        } else {
+            inicio = System.currentTimeMillis();
+        }
+
+
+        while (intentos > 0) {
             String respuesta = br.readLine(); //Leo y guardo la respuesta del cliente
             respuestaServidor = verificarIntento(palabra, respuesta);
             pw.println(respuestaServidor); //ej: 01201
-            intentos++;
-            if(respuestaServidor.equals("2".repeat(palabra.length()))){
+            if (!contrarreloj) intentos--;
+            if (respuestaServidor.equals("2".repeat(palabra.length()))) {
                 win = true;
                 break;
             }
@@ -70,11 +78,11 @@ public class AtenderCliente implements Runnable {
 
         pw.println(win);
         if (win) {
-            if(contrarreloj){
-                long fin=System.currentTimeMillis();
-                long tiempo=fin-inicio;
+            if (contrarreloj) {
+                long fin = System.currentTimeMillis();
+                long tiempo = fin - inicio;
                 pw.println(tiempo);
-                TablaRecords.agregarEntrada(palabra,jugador, tiempo);
+                TablaRecords.agregarEntrada(palabra, jugador, tiempo);
                 guardar(Servidor.records);
             }
         } else {
