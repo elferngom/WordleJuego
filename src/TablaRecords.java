@@ -2,9 +2,9 @@ import java.io.Serializable;
 import java.util.*;
 
 public class TablaRecords implements Serializable {
-    private static final Map<String, List<EntradaRecord>> tablas = new HashMap<>();
+    private final Map<String, List<EntradaRecord>> tablas = new HashMap<>();
     private static final int ENTRADAS = 3;
-    public static synchronized void agregarEntrada(String palabra, String jugador, long tiempo) {
+    public synchronized void agregarEntrada(String palabra, String jugador, long tiempo) {
         palabra = palabra.toUpperCase();
         tablas.putIfAbsent(palabra, new ArrayList<>());
 
@@ -15,5 +15,8 @@ public class TablaRecords implements Serializable {
         if(ranking.size() > ENTRADAS) {
             ranking.remove(ranking.size()-1);
         }
+    }
+    public synchronized List<EntradaRecord> getRanking(String palabra){
+        return tablas.getOrDefault(palabra,new ArrayList<>());
     }
 }

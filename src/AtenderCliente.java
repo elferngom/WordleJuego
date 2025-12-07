@@ -86,8 +86,15 @@ public class AtenderCliente implements Runnable {
                 long fin = System.currentTimeMillis();
                 long tiempo = fin - inicio;
                 pw.println(tiempo);
-                TablaRecords.agregarEntrada(palabra, jugador, tiempo);
+                Servidor.records.agregarEntrada(palabra, jugador, tiempo);
                 guardar(Servidor.records);
+
+
+                List<EntradaRecord> ranking=Servidor.records.getRanking(palabra);
+                pw.println(ranking.size());
+                for(EntradaRecord e:ranking){
+                    pw.println(e.jugador+" - "+e.tiempo+" ms");
+                }
             }
         } else {
             pw.println(palabra);

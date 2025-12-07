@@ -161,6 +161,19 @@ public class Cliente {
                     String tiempoServidor = br.readLine();
                     long tiempo = Long.parseLong(tiempoServidor);
                     System.out.println(cursiva + "\n¡TU TIEMPO HA SIDO: " + tiempo * 0.001 + " SEGUNDOS!\n" + reset);
+
+                    System.out.println("---TOP 3 MEJORES TIEMPOS---");
+                    int cantidad=Integer.parseInt(br.readLine());
+                    for(int i=0;i<cantidad;i++){
+                        String entrada=br.readLine();
+                        if(i==0) {
+                            System.out.println(verde+(i+1)+". "+entrada+reset);
+                        } else if(i==1){
+                            System.out.println(amarillo+(i+1)+". "+entrada+reset);
+                        } else{
+                            System.out.println(rojo+(i+1)+". "+entrada+reset);
+                        }
+                    }
                 } else {
                     System.out.println(cursiva + "\n¡HAS ACERTADO!\n" +  reset);
                 }
